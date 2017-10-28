@@ -310,6 +310,8 @@
             }
             if (xhrGetPayments) xhrGetPayments.abort();
         },
+        init: function(){
+        },
         update: function(){
 
             $('#networkLastBlockFound').timeago('update', new Date(lastStats.network.timestamp * 1000).toISOString());
@@ -346,7 +348,7 @@
                 $('#donations').hide()
             }
 
-            updateText('poolFee', floatToString(totalFee) + '%');
+            updateText('poolFee', /*floatToString(totalFee)*/ totalFee + '%');
 
 
             updateText('blockSolvedTime', getReadableTime(lastStats.network.difficulty / lastStats.pool.hashrate));
@@ -378,16 +380,6 @@
         return formatAmounts(amount,  units[units.length - 1][1]);
     }
 
-    function getReadableHashRateString(hashrate){
-        var i = 0;
-        var byteUnits = [' H', ' KH', ' MH', ' GH', ' TH', ' PH' ];
-        while (hashrate > 1000){
-            hashrate = hashrate / 1000;
-            i++;
-        }
-        return hashrate.toFixed(2) + byteUnits[i];
-    }
-
 
 
 
@@ -401,7 +393,7 @@
         var marketsData = [];
         for (var i = 0; i < cryptonatorWidget.length; i++){
             (function(i){
-            	cryptonatorWidget[i] = cryptonatorWidget[i].replace('{symbol}', lastStats.config.symbol.toLowerCase());
+                cryptonatorWidget[i] = cryptonatorWidget[i].replace('{symbol}', lastStats.config.symbol.toLowerCase());
                 xhrMarketGets[cryptonatorWidget[i]] = $.get('https://api.cryptonator.com/api/ticker/' + cryptonatorWidget[i], function(data){
                     if(data.error) {
                         return;
@@ -444,7 +436,7 @@
 
     function calcEstimateProfit(){
         try {
-            var rateUnit = Math.pow(1000,parseInt($('#calcHashUnit').data('mul')));
+            var rateUnit = Math.pow(1024,parseInt($('#calcHashUnit').data('mul')));
             var hashRate = parseFloat($('#calcHashRate').val()) * rateUnit;
             var profit = (hashRate * 86400 / lastStats.network.difficulty) * lastStats.network.reward;
             if (profit) {
@@ -532,18 +524,16 @@
 
                     renderPayments(data.payments);
 
-                    $('.yourStats').show(function(){
-                        xhrRenderUserCharts = $.ajax({
-                            url: api + '/stats_address?address=' + address + '&longpoll=false',            
-                            cache: false,
-                            dataType: 'json',            
-                            success: function(data) {
-                                createUserCharts(data);                                
-                            }
-                        });
+                    $('.yourStats').show();
+
+                    xhrRenderUserCharts = $.ajax({
+                        url: api + '/stats_address?address=' + address + '&longpoll=false',            
+                        cache: false,
+                        dataType: 'json',            
+                        success: function(data) {
+                            createUserCharts(data);                                
+                        }
                     });
-                    
-                    
 
                     docCookies.setItem('mining_address', address, Infinity);
 
