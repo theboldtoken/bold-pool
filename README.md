@@ -1,6 +1,8 @@
 cryptonote-forknote-pool
 ====================
 
+### This repo is antiquated and will not support the latest network changes. Please use [Venthos Nodejs-pool](https://github.com/Venthos/nodejs-pool) instead.
+
 High performance Node.js (with native C addons) mining pool for Cryptonote based coins, created with the Forknote software such as Bytecoin, Dashcoin, etc..
 
 Comes with lightweight example front-end script which uses the pool's AJAX API.
